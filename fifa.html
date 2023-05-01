@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=UTF-8>
+    <meta name=viewport content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js
+        integrity=”sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q”
+        crossorigin=”anonymous”></script>
+
+    <script src=”https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js”
+        integrity=”sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl”
+        crossorigin=”anonymous”></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <title>Fifa Womans World cup </title>
+
+    <style>
+        #map {
+            position: relative;
+            margin: auto;
+            width: 95%;
+            height: 800px;
+            border: thin solid #0a0a0a00;
+        }
+
+        #directions {
+            position: relative;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        select {
+            width: 25%;
+            height: 25%;
+            margin: auto;
+            position: relative;
+            padding: auto;
+
+        }
+
+
+
+        /* CSS */
+        /* button reference 
+        https://getcssscan.com/css-buttons-examples, button 60 */
+        button {
+            align-items: center;
+            appearance: none;
+            background-color: #fff;
+            border: 1px solid #dbdbdb;
+            border-radius: .375em;
+            box-shadow: none;
+            box-sizing: border-box;
+            color: #363636;
+            cursor: pointer;
+            display: inline-flex;
+            font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 1.25rem;
+            height: 3rem;
+            justify-content: center;
+            line-height: 1.5;
+            padding: calc(.5em - 1px) 1em;
+            position: relative;
+            text-align: center;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            vertical-align: top;
+            white-space: nowrap;
+        }
+
+        button:active {
+            border-color: #4a4a4a;
+            outline: 0;
+        }
+
+        button:focus {
+            border-color: #485fc7;
+            outline: 0;
+        }
+
+        button:hover {
+            border-color: #b5b5b5;
+        }
+
+        button:focus:not(:active) {
+            box-shadow: rgba(72, 95, 199, .25) 0 0 0 .125em;
+        }
+
+        #stadiums {
+            width: 95%;
+            display: inline-flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-left: 2.5%;
+            background-color:rgb(255, 154, 1) ; 
+            border-radius: 20px; 
+
+        }
+
+        .card {
+            width: 18rem;
+            margin: 20px;
+            position: relative;
+            justify-content: center;
+
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+        }
+
+        #content {
+            width: auto;
+            height: auto;
+        }
+
+        /* Style the select element */
+        select {
+            width: 250px;
+            height: 40px;
+            background-color: white;
+            border: 1px solid black;
+            border-radius: 5px;
+            padding: 5px;
+            font-size: 20px;
+            font-family: Arial, sans-serif;
+            color: black;
+        }
+
+        /* Style the option elements */
+        select option {
+            background-color: white;
+            color: black;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Style the selected option */
+        select option:checked {
+            background-color: blue;
+            color: white;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        #mapControls {
+            width: 95%;
+            display: inline-flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            background-color:rgb(255, 154, 1) ;
+            border-bottom-left-radius: 20px;
+            margin-left:2.5% ;
+        }
+
+        .control {
+
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 10px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .marker {
+            /* circle image  */
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+
+        }
+
+        #pageImage {
+            width: 100%;
+            height: 700px;
+            justify-content: center;
+            background-image: url("m.jpeg");
+            background-size: cover;
+            border-radius: 20px;
+
+        }
+
+        #pageText {
+
+            position: absolute;
+            top: 25%;
+            z-index: 1;
+            width: 50%;
+            height: auto;
+            left: 25%;
+            border-radius: 20px;
+
+
+            background-color: rgba(44, 112, 198, 0.6);
+            justify-content: center;
+
+        }
+
+        #pageText h1 {
+            color: white;
+            text-align: center;
+            font-size: 50px;
+            font-weight: bold;
+            margin-top: 50px;
+        }
+
+        #pageText h2 {
+            color: white;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 50px;
+        }
+
+        #pageContent {
+            position: relative;
+            left: 2.5%;
+            width: 95%;
+            display: flex;
+            flex-wrap: wrap;
+            background-color: rgba(255, 154, 0, 0.6);
+            border-radius:20px;
+
+        }
+
+        #pageContent h1 {
+
+            font-size: 50px;
+            margin: 10px;
+            font-weight: bold;
+            margin-top: 50px;
+            font-family: 'Readex Pro', sans-serif;
+        }
+
+        #pageContent p {
+
+            font-size: 30px;
+            font-weight: bold;
+            margin: 10px;
+            margin-top: 50px;
+            font-family: 'Readex Pro', sans-serif;
+        }
+        #pageContent ul, li {
+
+            font-size: 30px;
+            font-weight: bold;
+            margin: 10px;
+            margin-top: 50px;
+            font-family: 'Readex Pro', sans-serif;
+        }
+
+        .navbar-custom{
+            background-color:rgb(255, 154, 0)
+        }
+        #mapText{ 
+            margin-top:10px ;
+            width: 95%;
+            display: flex;
+            justify-content: center;
+            background-color:rgb(255, 154, 00.6);
+            border-top-right-radius:20px;
+            margin-left:2.5% ;
+        }
+        #mapText h1{
+            justify-content: center;
+            font-size: 50px;
+            font-weight: bold;
+            
+            font-family: 'Readex Pro', sans-serif;
+        }
+        #routeButton{
+            font-size: 1rem;
+            height: 2rem;
+
+        }
+
+        
+    </style>
+
+    <!-- Google Maps -->
+    <script async
+        src=https://maps.googleapis.com/maps/api/js?key=AIzaSyCPNWtWAqzzab1WPbr5M0rKU6NYNZVOvYQ&callback=loadMap&libraries=places></script>
+
+    <script>
+        // thing to do 
+        // Run on both mobile and laptop
+        // Provide a visually pleasing display of the various tourist-related content
+        // Show various useful tourist information on the map
+        // Allow users to filter content
+        // Allow users to show/hide Points of Interest on the map
+        // Include custom content. The custom content must include images
+        // Include custom markers
+        // Read a JSON object from a JSON file and combine this with the results of a google.maps.place object (https://developers.google.com/maps/documentation/places/web-service/details#Place)
+        // Allow the user to find a route between various locations
+        // Display a LocalContext map of a separate, but related topic, on a second webpage - have to do 
+
+        map = null;
+        let directionsRenderer = null
+        let markerDroped = false;
+        let distanceM = null;
+
+
+        let locations = {
+            "Adelaide, Australia – Hindmarsh Stadium": {
+                "latitude": -34.9073,
+                "longitude": 138.5958,
+                "place_id": "ChIJu9ujgk3PsGoRAG-6RVU2Aw8"
+            },
+            "Brisbane, Australia – Brisbane Stadium": {
+                "latitude": -27.4580,
+                "longitude": 153.0099,
+                "place_id": "ChIJC5L-7atQkWsRALUh11ujAg8"
+            },
+            "Melbourne, Australia – AAMI Park": {
+                "latitude": -37.8253,
+                "longitude": 144.9833,
+                "place_id": "ChIJaQ_iGJZC1moRc0d9A6mojJc"
+
+            },
+            "Perth, Australia – Perth Rectangular Stadium": {
+                "latitude": -31.9448,
+                "longitude": 115.8355,
+                "place_id": "ChIJEWAFm9u6MioRFvGLqG5U3KM"
+            },
+
+            "AZN Stadium": {
+                "latitude": -33.8472,
+                "longitude": 151.0634,
+                "place_id": "ChIJp-0oJxylEmsRdu3tWHekYQ0"
+            },
+            "Allianz Stadium": {
+                "latitude": -33.8938,
+                "longitude": 151.2242,
+                "place_id": "ChIJFdVgXwKuEmsR487D1VwluxM"
+            },
+
+            "Auckland, New Zealand – Eden Park": {
+                "latitude": -36.8724,
+                "longitude": 174.7447,
+                "place_id": "ChIJCZ7JArJHDW0RdptFyWybd74"
+            },
+            "Dunedin, New Zealand – Dunedin Stadium": {
+                "latitude": -45.8672,
+                "longitude": 170.5071,
+                "place_id": "ChIJuZVBRkGsLqgRE4Zw34pRKIQ"
+            },
+            "Hamilton, New Zealand – Waikato Stadium": {
+                "latitude": -37.7866,
+                "longitude": 175.2793,
+                "place_id": "ChIJs1ZnkAsibW0RoOG02ReaEpk"
+
+            },
+            "Wellington, New Zealand – Wellington Regional Stadium": {
+                "latitude": -41.2745,
+                "longitude": 174.7831,
+                "place_id": "ChIJR7KXhDquOG0RuEC90I2oEy0"
+            }
+        };
+
+        let services_centre_location = null
+        let selectedLocation = null
+
+
+
+
+
+        function loadMap() {
+            // services_centre_location = null
+            let icon = {
+                url: "icon.png",
+                scaledSize: new google.maps.Size(55, 55)
+            }
+            let fifaW = { lat: -33.891525, lng: 151.224121 }
+            const CONTENT = 0,
+                LATITUDE = 1,
+                LONGITUDE = 2
+
+
+                let locations = {
+            "Adelaide, Australia – Hindmarsh Stadium": {
+                "latitude": -34.9073,
+                "longitude": 138.5958,
+                "place_id": "ChIJu9ujgk3PsGoRAG-6RVU2Aw8"
+            },
+            "Brisbane, Australia – Brisbane Stadium": {
+                "latitude": -27.4580,
+                "longitude": 153.0099,
+                "place_id": "ChIJC5L-7atQkWsRALUh11ujAg8"
+            },
+            "Melbourne, Australia – AAMI Park": {
+                "latitude": -37.8253,
+                "longitude": 144.9833,
+                "place_id": "ChIJaQ_iGJZC1moRc0d9A6mojJc"
+
+            },
+            "Perth, Australia – Perth Rectangular Stadium": {
+                "latitude": -31.9448,
+                "longitude": 115.8355,
+                "place_id": "ChIJEWAFm9u6MioRFvGLqG5U3KM"
+            },
+
+            "AZN Stadium": {
+                "latitude": -33.8472,
+                "longitude": 151.0634,
+                "place_id": "ChIJp-0oJxylEmsRdu3tWHekYQ0"
+            },
+            "Allianz Stadium": {
+                "latitude": -33.8938,
+                "longitude": 151.2242,
+                "place_id": "ChIJFdVgXwKuEmsR487D1VwluxM"
+            },
+
+            "Auckland, New Zealand – Eden Park": {
+                "latitude": -36.8724,
+                "longitude": 174.7447,
+                "place_id": "ChIJCZ7JArJHDW0RdptFyWybd74"
+            },
+            "Dunedin, New Zealand – Dunedin Stadium": {
+                "latitude": -45.8672,
+                "longitude": 170.5071,
+                "place_id": "ChIJuZVBRkGsLqgRE4Zw34pRKIQ"
+            },
+            "Hamilton, New Zealand – Waikato Stadium": {
+                "latitude": -37.7866,
+                "longitude": 175.2793,
+                "place_id": "ChIJs1ZnkAsibW0RoOG02ReaEpk"
+
+            },
+            "Wellington, New Zealand – Wellington Regional Stadium": {
+                "latitude": -41.2745,
+                "longitude": 174.7831,
+                "place_id": "ChIJR7KXhDquOG0RuEC90I2oEy0"
+            }
+        }
+
+
+            let firstElement = Object.keys(locations)[0];
+            let latitude = locations[firstElement]["latitude"];
+            let longitude = locations[firstElement]["longitude"]
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 5,
+                center: new google.maps.LatLng(fifaW.lat, fifaW.lng),
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                mapTypeControlOptions: {
+                    mapTypeIds: ["roadmap", "satellite", "hide_poi"]
+                },
+
+
+            })
+
+
+            hidePointsOfInterest(map)
+
+            let infoWindow = new google.maps.InfoWindow()
+            for (const [key, value] of Object.entries(locations)) {
+                let marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(value.latitude, value.longitude),
+                    icon: icon,
+                    map: map,
+
+                })
+
+                google.maps.event.addListener(marker, "click", () => {
+                    let serviceP = new google.maps.places.PlacesService(map)
+                    let URL = "";
+                    serviceP.getDetails({ placeId: value.place_id }, (place_id, status) => {
+                        if (status === google.maps.places.PlacesServiceStatus.OK) {
+                            console.log(place_id)
+                            infoWindow.setContent(`<div id=content>
+                                             <img  class="marker" src = ${place_id.photos[0].getUrl({ maxWidth: 200, maxHeight: 200 })}>
+                                             <p class mae>${key}</p>
+                                             
+                                        </div>`)
+                        }
+                    })
+                    infoWindow.open(map, marker);
+                    //to pan with zoom
+                    map.setZoom(17);
+
+                    map.panTo(marker.getPosition());
+                    if (!markerDroped) {
+                        services_centre_location = marker.getPosition();
+                    }
+
+                    showAttraction()
+
+
+
+                })
+
+            }
+            var buttonDiv = document.createElement('div');
+
+            var button = document.createElement('button');
+            button.setAttribute('id', 'routeButton');
+            button.innerHTML = 'Remove Route';
+
+            button.addEventListener('click', removerRoute);
+
+
+            buttonDiv.appendChild(button);
+
+
+            map.controls[google.maps.ControlPosition['RIGHT_CENTER']].push(buttonDiv);
+
+            directionsRenderer = new google.maps.DirectionsRenderer()
+            directionsRenderer.setMap(map)
+
+
+            directionsRenderer.setPanel(document.getElementById("directions"))
+            if (markerDroped) {
+                console.log(distanceM.get_position())
+            }
+
+
+            if (markerDroped) {
+                google.maps.event.addListener(distanceM, 'dragend', function () {
+                    services_centre_location = marker.getPosition();
+                })
+            }
+
+
+
+
+
+
+
+        }
+
+        function showAttraction() {
+
+            let service = new google.maps.places.PlacesService(map)
+
+
+
+            service.nearbySearch({
+                location: services_centre_location, // centre of the search
+                radius: 5000, // radius (in metres) of the search
+                type: [document.getElementById("filter").value] // type of establishment to search for
+            }, getNearbyServicesMarkers)
+            console.log(document.getElementById("filter").value)
+        }
+
+        function removerRoute() {
+
+            directionsRenderer.setMap(null)
+            console.log("why")
+        }
+
+
+
+
+
+
+
+        let markerArray = []
+        function getNearbyServicesMarkers(results, status) {
+
+            markerArray.forEach(marker => {
+                marker.setVisible(false)
+            })
+
+            markerArray = []
+
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                results.forEach(result => {
+
+                    createMarker(result)
+                })
+            }
+        }
+
+
+        function moveTo(lat1, lng1) {
+            console.log(lat1)
+            console.log(lng1)
+            map.panTo({ lat: lat1, lng: lng1 });
+            map.setZoom(10);
+
+        }
+
+
+        function createMarker(place) {
+
+            let icon = {
+                url: place.icon, // url
+                scaledSize: new google.maps.Size(30, 30) // scale the image to an icon size
+            }
+
+            let marker = new google.maps.Marker({
+                map: map,
+                icon: icon,
+                position: place.geometry.location
+            })
+
+            markerArray.push(marker)
+
+            infoWindow = new google.maps.InfoWindow()
+
+            google.maps.event.addListener(marker, "click", () => {
+                infoWindow.setContent(place.name)
+                infoWindow.open(map, marker)
+
+                if (markerDroped) {
+                    services_centre_location = distanceM.getPosition();
+                }
+                selectedLocation = marker.getPosition();
+                calculateRoutef(services_centre_location, selectedLocation)
+
+            })
+        }
+
+
+        function hidePointsOfInterest(map) {
+            let styles = [
+                {
+                    "featureType": "poi",
+                    "stylers": [{ "visibility": "off" }]
+                }
+            ]
+
+            let styledMapType = new google.maps.StyledMapType(styles, { name: "POI Hidden", alt: "Hide Points of Interest" })
+            map.mapTypes.set("hide_poi", styledMapType)
+
+        }
+
+        function DistanceMarker() {
+            distanceM = new google.maps.Marker({
+                map: map,
+                position: map.getCenter(),
+                draggable: true,
+            })
+            distanceM.setMap(map)
+            markerDroped = true;
+            document.getElementById("button1").innerHTML = `<button onclick="RemoveMarker()"> remove pin</button>`
+
+        }
+
+        function calculateRoute() {
+            directionsRenderer.setMap(map)
+            let start = document.getElementById("start").value
+            let end = document.getElementById("end").value
+
+            let request = {
+                origin: start,
+                destination: end,
+                travelMode: google.maps.TravelMode.DRIVING
+            }
+
+            directionsService = new google.maps.DirectionsService()
+            directionsService.route(request, (route, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    directionsRenderer.setDirections(route)
+                }
+            })
+
+        }
+
+        function calculateRoutef(start, end) {
+            directionsRenderer.setMap(map)
+            let startf = start
+            let endf = end
+
+            let request = {
+                origin: startf,
+                destination: endf,
+                travelMode: google.maps.TravelMode.DRIVING
+            }
+
+            directionsService = new google.maps.DirectionsService()
+            directionsService.route(request, (route, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    directionsRenderer.setDirections(route)
+                }
+            })
+
+        }
+
+
+        async function getPhoto(place) {
+            return new Promise((resolve, reject) => {
+                let service = new google.maps.places.PlacesService(map)
+                service.getDetails({ placeId: place }, (place, status) => {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        console.log(place)
+                        resolve(place.photos[0].getUrl({ maxWidth: 200, maxHeight: 200 }))
+                    } else {
+                        reject(new Error(`Failed to get photo for place ${place}: ${status}`))
+                    }
+                })
+            })
+        }
+
+
+        //  function ReturnStadiums(){
+        //     var htmlString = "hello" 
+        //     for (const [key, value] of Object.entries(locations)){
+        //         htmlString+=`<div class="card">`;
+        //         var index = key.indexOf("–");
+        //         var newStr =  getPhoto(value.place_id);
+        //         console.log(newStr)
+        //         console.log("index")
+        //         htmlString+=`<img src="${newStr}" class="card-img-top" alt="${getPhoto(value.place_id)}">`
+        //         htmlString+=`<div class="card-body">`
+        //         htmlString+=`<h5 class="card-title">${key}</h5>`
+        //         htmlString+=`</div></div>`
+        //     }
+        //     return htmlString
+        // }
+        async function ReturnStadiums() {
+            var htmlString = ""
+            for (const [key, value] of Object.entries(locations)) {
+                htmlString += `<div class="card">`;
+                var index = key.indexOf("–");
+                try {
+                    var newStr = await getPhoto(value.place_id);
+                    console.log(newStr)
+                    htmlString += `<img src="${newStr}" class="card-img-top" alt="${value.name}">`
+                } catch (err) {
+                    console.error(err)
+                    htmlString += `<img src="" class="card-img-top" alt="${value.name}">`
+                }
+                htmlString += `<div class="card-body">`
+                htmlString += `<h5 class="card-title">${key}</h5>`
+                htmlString += `<button onclick="moveTo(${value.latitude} , ${value.longitude})">Go to location on map</button>`
+
+                htmlString += `</div></div>`
+            }
+            return htmlString
+        }
+
+        function createButton(map, title, position, callback) {
+
+            var buttonDiv = document.createElement('div');
+
+            var button = document.createElement('button');
+            button.innerHTML = title;
+
+            button.addEventListener('click', callback);
+
+            buttonDiv.appendChild(button);
+
+            map.controls[google.maps.ControlPosition[position]].push(buttonDiv);
+        }
+        function RemoveMarker() {
+            distanceM.setMap(null)
+            markerDroped = false;
+            document.getElementById("button1").innerHTML = `<button onclick="DistanceMarker()"> Add pin</button>`
+        }
+
+
+
+
+        //function to set the controle panel accordin to what is selected
+        async function setControlePanel() {
+            var opt = document.getElementById("sected").value
+            if (opt === "route") {
+                var htmlString = `<span class=select-location-label>Start:</span>
+        <select id=start onChange=calculateRoute(true)>
+            <option value="Adelaide, Australia Hindmarsh Stadium">Hindmarsh Stadium</option>
+            <option value="Brisbane Stadium">Brisbane Stadium</option>
+            <option value="Melbourne, Australia – Melbourne Rectangular Stadium">Melbourne Rectangular Stadium</option>
+            <option value="Perth, Australia – Perth Rectangular Stadium"> Perth Rectangular Stadium</option>                 
+        </select>
+
+        <br>
+        <span class=select-location-label>End:</span>
+        <select id=end onChange=calculateRoute(true)>
+            <option value="Adelaide, Australia Hindmarsh Stadium">Hindmarsh Stadium</option>
+            <option value="Brisbane Stadium">Brisbane Stadium</option>
+            <option value="Melbourne, Australia – Melbourne Rectangular Stadium">Melbourne Rectangular Stadium</option>
+            <option value="Perth, Australia – Perth Rectangular Stadium"> Perth Rectangular Stadium</option>                     
+        </select>`;
+                document.getElementById("control-panel").innerHTML = htmlString;
+                document.getElementById("stadiums").innerHTML = "";
+            }
+
+            else if (opt === "scrole trough") {
+                document.getElementById("control-panel").innerHTML = "";
+                document.getElementById("directions").innerHTML = "";
+                document.getElementById("stadiums").innerHTML = "";
+                directionsRenderer.setMap(null);
+                loadMap();
+
+            }
+            else if (opt === "Stadiums") {
+                document.getElementById("directions").innerHTML = "";
+                document.getElementById("control-panel").innerHTML = "";
+                document.getElementById("stadiums").innerHTML = await ReturnStadiums();
+            }
+
+        }
+
+    </script>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-custom" style ="color:rgb(255, 131, 1)">
+        <a class="navbar-brand" href="#"><img src="logo.png" style = "height: fit-content;width: 100px; margin-left:5%;"> </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="localContext.html">Features</a>
+                </li>
+                
+                 
+            </ul>
+            
+        </div>
+    </nav>
+    <div>
+
+        <div id="pageImage">
+
+            <div id="pageText">
+                <h1>Fifa Womans World Cup 2023 Venues & Maps</h1>
+                <h2> Australia and New Zealand: July 20 - August 20, 2023</h2>
+            </div>
+        </div>
+
+        <div id="pageContent">
+            <div>
+                <h1>2023 Women's Worlds of Soccer Venues & Map</h1>
+                <p>The 2023 Women's Worlds of Soccer will play out at ten host stadiums in nine cities across Australia
+                    and New Zealand. The tournament
+                    will kick off at Eden Park in Auckland and conclude with the Championship Final at Stadium Australia
+                    in Sydney.
+                    Each country will host one of the semi-final matches: the first at Eden Park in Auckland, the second
+                    at Stadium Australia in Sydney. </p>
+                <br>
+                <p>The 2023 Women's Worlds of Soccer host cities and their venues include:</p>
+                <ul>
+                    <li>Adelaide, Australia - Hindmarsh Stadium</li>
+                    <li>Brisbane, Australia - Brisbane Stadium</li>
+                    <li>Melbourne, Australia - Melbourne Rectangular Stadium</li>
+                    <li>Perth, Australia - Perth Rectangular Stadium</li>
+                    <li>Sydney, Australia - Stadium Australia and Sydney Football Stadium</li>
+                    <li>Auckland, New Zealand - Eden Park</li>
+                    <li>Dunedin, New Zealand - Dunedin Stadium</li>
+                    <li>Hamilton, New Zealand - Waikato Stadium</li>
+                    <li>Wellington, New Zealand - Wellington Regional Stadium</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+    <div id ="mapText"><h1>Map Contols</h1></div>
+
+
+    <div id="mapControls">
+        
+        <div class="control">
+
+            <select name="options" id="sected" onchange="setControlePanel()">
+                <option value="route">Distance from stadiums and route</option>
+                <option value="scrole trough" selected>scrole trough</option>
+                <option value="Stadiums">Stadiums</option>
+            </select>
+
+        </div>
+
+        <div id="button1" class="control">
+
+        </div>
+
+
+        <div class="control">
+
+
+            <label for="my-select">Filter POI:</label>
+            <select id="filter" onchange="showAttraction()">
+                <option value="cafe">Cafe</option>
+                <option value="hotel">Hotel</optoin>
+                <option value="bank">Bank</optoin>
+                <option value="atm">ATM</optoin>
+                <option value="hospital">Hospital</optoin>
+            </select>
+        </div>
+    </div>
+
+    <div id=map></div>
+    <div id=directions></div>
+
+    <div id="stadiums">
+
+    </div>
+
+
+    <div id="control-panel"></div>
+    <footer class="bg-dark text-center text-white">
+        <!-- Grid container -->
+        <div class="container p-4 pb-0">
+            <!-- Section: Social media -->
+            <section class="mb-4">
+                <!-- Facebook -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"><i
+                        class="fab fa-facebook-f"></i></a>
+
+                <!-- Twitter -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"><i
+                        class="fab fa-twitter"></i></a>
+
+                <!-- Google -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"><i
+                        class="fab fa-google"></i></a>
+
+                <!-- Instagram -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"><i
+                        class="fab fa-instagram"></i></a>
+
+                <!-- Linkedin -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"><i
+                        class="fab fa-linkedin-in"></i></a>
+
+                <!-- Github -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"><i
+                        class="fab fa-github"></i></a>
+            </section>
+            <!-- Section: Social media -->
+        </div>
+        <!-- Grid container -->
+
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2020 Copyright:
+            <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+        </div>
+    </footer>
+
+    <script>
+
+        var htmlopt = `<button onclick="DistanceMarker()"> Drop Pin</button>`
+        var html2 = `<button onclick="RemoveMarker()"> remove pin</button>`
+        if (markerDroped) {
+            console.log("markerDroped")
+            document.getElementById("button1").innerHTML = html2;
+        }
+        else {
+            document.getElementById("button1").innerHTML = htmlopt;
+        }
+    </script>
+</body>
+
+</html>
