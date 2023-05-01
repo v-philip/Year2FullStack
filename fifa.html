@@ -711,22 +711,6 @@
             })
         }
 
-
-        //  function ReturnStadiums(){
-        //     var htmlString = "hello" 
-        //     for (const [key, value] of Object.entries(locations)){
-        //         htmlString+=`<div class="card">`;
-        //         var index = key.indexOf("–");
-        //         var newStr =  getPhoto(value.place_id);
-        //         console.log(newStr)
-        //         console.log("index")
-        //         htmlString+=`<img src="${newStr}" class="card-img-top" alt="${getPhoto(value.place_id)}">`
-        //         htmlString+=`<div class="card-body">`
-        //         htmlString+=`<h5 class="card-title">${key}</h5>`
-        //         htmlString+=`</div></div>`
-        //     }
-        //     return htmlString
-        // }
         async function ReturnStadiums() {
             var htmlString = ""
             for (const [key, value] of Object.entries(locations)) {
@@ -881,7 +865,6 @@
         <div class="control">
 
             <select name="options" id="sected" onchange="setControlePanel()">
-                <option value="route">Distance from stadiums and route</option>
                 <option value="scrole trough" selected>scrole trough</option>
                 <option value="Stadiums">Stadiums</option>
             </select>
