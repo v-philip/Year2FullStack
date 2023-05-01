@@ -4,10 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js
+        integrity=”sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q”
+        crossorigin=”anonymous”></script>
+
+    <script src=”https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js”
+        integrity=”sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl”
+        crossorigin=”anonymous”></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fifa Womans World cup </title>
     <style>
         #map {
+            position: relative;
             height: 100%;
             width: 100%;
         }
@@ -21,29 +39,53 @@
         }
 
         #stadiums {
-            
-            width: 200px;
-            height: 100px;
+
+            width: 400px;
+            height: 300px;
             margin: 0;
             padding: 0;
+            overflow: hidden;
             overflow: scroll;
             position: absolute;
             top: 25%;
             right: 15px;
-            z-index:3999;
+            z-index: 3999;
             background-color: white;
+            justify-content: center;
+
         }
 
         .hide {
             display: none;
         }
 
-        #stadium {
-            width: 100%;
-            height: 100%;
-
-
+        .stadium {
+            width: 98%;
+            height: 98%;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+            border-radius: 10px;
+            background-color: rgba(239, 217, 52, 0.359);
+            overflow: hidden;
         }
+
+        .stadium img {
+            height: fit-content;
+
+
+            border-radius: 10px;
+        }
+
+        .stadium:hover {
+            background-color: rgba(239, 217, 52, 1);
+        }
+
+        .stadium p {
+            font-size: medium;
+            font-weight: bold;
+        }
+
 
         button {
             align-items: center;
@@ -62,7 +104,7 @@
             justify-content: center;
             line-height: 1.5;
             padding: calc(.5em - 1px) 1em;
-            position: relative;
+            position: absolute;
             text-align: center;
             user-select: none;
             -webkit-user-select: none;
@@ -71,6 +113,7 @@
             white-space: nowrap;
             z-index: 1;
             top: 15%;
+            right: 15px;
 
         }
 
@@ -91,6 +134,33 @@
         button:focus:not(:active) {
             box-shadow: rgba(72, 95, 199, .25) 0 0 0 .125em;
         }
+
+        .navbar-custom {
+            background-color: rgb(255, 154, 0)
+        }
+
+        .element {
+            width: 100px;
+            height: 100px;
+        }
+
+        /* media query for larger screens */
+        @media (max-width: 768px) {
+            #stadiums {
+                width: 200px;
+                height: 200px;
+            }
+        }
+
+        ul,
+        li {
+
+            font-size: 30px;
+            font-weight: bold;
+            margin: 10px;
+            margin-top: 50px;
+            font-family: 'Readex Pro', sans-serif;
+        }
     </style>
 
     <script async
@@ -99,6 +169,7 @@
 
 
     <script>
+
         let locations = {
             "Adelaide, Australia – Hindmarsh Stadium": {
                 "latitude": -34.9073,
@@ -122,10 +193,10 @@
                 "place_id": "ChIJEWAFm9u6MioRFvGLqG5U3KM"
             },
 
-            "Stadium Australia": {
+            "AZN Stadium": {
                 "latitude": -33.8472,
                 "longitude": 151.0634,
-                "place_id": "ChIJEWAFm9u6MioRFvGLqG5U3KM"
+                "place_id": "ChIJp-0oJxylEmsRdu3tWHekYQ0"
             },
             "Allianz Stadium": {
                 "latitude": -33.8938,
@@ -136,7 +207,7 @@
             "Auckland, New Zealand – Eden Park": {
                 "latitude": -36.8724,
                 "longitude": 174.7447,
-                "place_id": "ChIJEWAFm9u6MioRFvGLqG5U3KM"
+                "place_id": "ChIJCZ7JArJHDW0RdptFyWybd74"
             },
             "Dunedin, New Zealand – Dunedin Stadium": {
                 "latitude": -45.8672,
@@ -167,15 +238,22 @@
         let map = null
         let serviceP = null
         let pressed = null
+        var place = ""
         var hotelLocation = {}
         if (pressed == null) {
             firstLocation = Object.entries(locations)[0][1]; // get the value of the first key-value pair
             hotelLocation = { lat: firstLocation.latitude, lng: firstLocation.longitude };
+            place = firstLocation.place_id;
         }
+
 
 
         function loadMap() {
             map = new google.maps.Map(document.getElementById("map"))
+            let icon = {
+                url: "icon.png",
+                scaledSize: new google.maps.Size(55, 55)
+            }
 
             const degrees = metersToDegrees(3000)
 
@@ -205,14 +283,40 @@
                 zoom: 14
             })
 
-            // add a hotel marker at the location of hotelLocation
-            new google.maps.Marker({
+
+            let infoWindow = new google.maps.InfoWindow()
+            let marker = new google.maps.Marker({
                 position: hotelLocation,
                 map: localContextMap,
-                icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAdUlEQVR4AWMYOWAU/AfhYWMBCxA3A/FlIN4MxN7I6gjg80DcD8QC+CzIxqIxH6aOSHwfYQmmBZexuQymjgTcj8uCz1gUHybDgvO4LFiMRXE4GRb8x2UBDxCXQ8PxPdSrLNSxAD+g3ALCeNQCKoHhZcHAg1EAAM3cyWj3TGxhAAAAAElFTkSuQmCC",
+                icon: icon,
                 zIndex: 30,
-                title: "Your Hotel"
+
             })
+            google.maps.event.addListener(marker, "click", () => {
+                let serviceP = new google.maps.places.PlacesService(map)
+                let URL = "";
+                serviceP.getDetails({ placeId: place }, (place_id, status) => {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        console.log(place_id)
+                        infoWindow.setContent(`<div id=content>
+                                             <img  class="marker" src = ${place_id.photos[0].getUrl({ maxWidth: 200, maxHeight: 200 })}>
+                                             <p class mae>${place_id.name}</p>
+                                             
+                                        </div>`)
+                        marker.setTitle(place_id.name)
+                    }
+                })
+
+                infoWindow.open(map, marker);
+                //to pan with zoom
+                map.setZoom(17);
+
+
+
+
+
+            })
+
             serviceP = new google.maps.places.PlacesService(map)
             let stadiums = document.getElementById("stadiums")
 
@@ -225,16 +329,17 @@
                         url = place.photos[0].getUrl({ maxWidth: 200, maxHeight: 200 })
                     }
 
-                    var htmlString = `<div class='stadium' onclick="moveTo(${value.latitude},${value.longitude})"'><h2>" ${key} "</h2><img src="${url} class="card-img-top" alt="${url}"</div>`
+                    var htmlString = `<div class='stadium' onclick="moveTo(${value.latitude},${value.longitude},'${value.place_id}')"><p>${key}</p><img src="${url}" class="card-img-top" alt="${url}"></div>`
                     stadiums.innerHTML += htmlString
                 })
 
             }
 
         }
-        function moveTo(lat, lng) {
+        function moveTo(lat, lng, place_id) {
             pressed = true;
             hotelLocation = { lat: lat, lng: lng }
+            place = place_id;
             console.log("test")
             loadMap()
         }
@@ -243,6 +348,11 @@
             myDiv.classList.toggle("hide");
         }
 
+        // function showAttraction(){
+        //     var filter = document.getElementById("filter");
+
+        // }
+
 
 
 
@@ -250,8 +360,38 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-custom" style="color:rgb(255, 131, 1)">
+        <a class="navbar-brand" href="fifa.html">Travel Website </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="fifa.html">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Features</a>
+                </li>
+                <li class="nav-item">
+
+            </ul>
+
+        </div>
+    </nav>
     <div id="stadiums"></div>
     <button onclick="toggleDiv()">Stadiums</button>
+    <!-- <label for="my-select">Filter POI:</label>
+            <select id="filter" onchange="showAttraction()">
+                <option value="cafe">Cafe</option>
+                <option value="hotel">Hotel</optoin>
+                <option value="bank">Bank</optoin>
+                <option value="atm">ATM</optoin>
+                <option value="hospital">Hospital</optoin>
+            </select> -->
+
+
 
     <div id=map></div>
 
