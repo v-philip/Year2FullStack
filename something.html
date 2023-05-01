@@ -16,7 +16,7 @@
     <script src=”https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js”
         integrity=”sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl”
         crossorigin=”anonymous”></script>
-    <title>Basic Google Map Example</title>
+    <title>Fifa Womans World cup </title>
 
     <style>
         #map {
@@ -47,13 +47,123 @@
 
         }
 
+
+
+        /* CSS */
+        button {
+            align-items: center;
+            appearance: none;
+            background-color: #fff;
+            border: 1px solid #dbdbdb;
+            border-radius: .375em;
+            box-shadow: none;
+            box-sizing: border-box;
+            color: #363636;
+            cursor: pointer;
+            display: inline-flex;
+            font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 1rem;
+            height: 2.5em;
+            justify-content: center;
+            line-height: 1.5;
+            padding: calc(.5em - 1px) 1em;
+            position: relative;
+            text-align: center;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            vertical-align: top;
+            white-space: nowrap;
+        }
+
+        button:active {
+            border-color: #4a4a4a;
+            outline: 0;
+        }
+
+        button:focus {
+            border-color: #485fc7;
+            outline: 0;
+        }
+
+        button:hover {
+            border-color: #b5b5b5;
+        }
+
+        button:focus:not(:active) {
+            box-shadow: rgba(72, 95, 199, .25) 0 0 0 .125em;
+        }
+
+        #stadiums {
+            display: inline-flex;
+            flex-wrap: wrap;
+            justify-content: center;
+
+        }
+
         .card {
             width: 18rem;
+            margin: 20px;
+            position: relative;
+            justify-content: center;
+
         }
 
         img {
             width: 100%;
             height: 100%;
+        }
+
+        #content {
+            width: auto;
+            height: auto;
+        }
+
+        /* Style the select element */
+        select {
+            width: 200px;
+            height: 30px;
+            background-color: white;
+            border: 1px solid black;
+            border-radius: 5px;
+            padding: 5px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            color: black;
+        }
+
+        /* Style the option elements */
+        select option {
+            background-color: white;
+            color: black;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Style the selected option */
+        select option:checked {
+            background-color: blue;
+            color: white;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        #mapControls{
+            width: 100%;
+            display: inline-flex;
+            flex-wrap: wrap;
+            justify-content: center;
+
+        }
+
+        .control {
+            
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 10px;
         }
     </style>
 
@@ -72,10 +182,13 @@
         // Include custom markers
         // Read a JSON object from a JSON file and combine this with the results of a google.maps.place object (https://developers.google.com/maps/documentation/places/web-service/details#Place)
         // Allow the user to find a route between various locations
-        // Display a LocalContext map of a separate, but related topic, on a second webpage
+        // Display a LocalContext map of a separate, but related topic, on a second webpage - have to do 
 
         map = null;
         let directionsRenderer = null
+        let markerDroped = false;
+        let distanceM = null;
+
 
         let locations = {
             "Adelaide, Australia – Hindmarsh Stadium": {
@@ -88,10 +201,11 @@
                 "longitude": 153.0099,
                 "place_id": "ChIJC5L-7atQkWsRALUh11ujAg8"
             },
-            "Melbourne, Australia – Melbourne Rectangular Stadium": {
+            "Melbourne, Australia – AAMI Park": {
                 "latitude": -37.8253,
                 "longitude": 144.9833,
-                "place_id": "ChIJC5L-7atQkWsRALUh11ujAg8"
+                "place_id": "ChIJaQ_iGJZC1moRc0d9A6mojJc"
+
             },
             "Perth, Australia – Perth Rectangular Stadium": {
                 "latitude": -31.9448,
@@ -133,13 +247,18 @@
             }
         };
 
+        let services_centre_location = null
+        let selectedLocation = null
+
+
+
 
 
         function loadMap() {
-            services_centre_location = null
+            // services_centre_location = null
             let icon = {
                 url: "icon.png",
-                scaledSize: new google.maps.Size(50, 50)
+                scaledSize: new google.maps.Size(55, 55)
             }
             let fifaW = { lat: -33.891525, lng: 151.224121 }
             const CONTENT = 0,
@@ -172,26 +291,26 @@
                     "longitude": 153.0099,
                     "place_id": "ChIJC5L-7atQkWsRALUh11ujAg8"
                 },
-                "Melbourne, Australia – Melbourne Rectangular Stadium": {
+                "Melbourne, Australia – AAMI Park": {
                     "latitude": -37.8253,
-                    "longitude": 144.9833
+                    "longitude": 144.9833,
+                    "place_id": "ChIJaQ_iGJZC1moRc0d9A6mojJc"
+
                 },
                 "Perth, Australia – Perth Rectangular Stadium": {
                     "latitude": -31.9448,
                     "longitude": 115.8355,
                     "place_id": "ChIJEWAFm9u6MioRFvGLqG5U3KM"
                 },
-                "Sydney, Australia – Stadium Australia and Sydney Football Stadium": {
-                    "Stadium Australia": {
-                        "latitude": -33.8472,
-                        "longitude": 151.0634,
-                        "place_id": "ChIJEWAFm9u6MioRFvGLqG5U3KM"
-                    },
-                    "Allianz Stadium": {
-                        "latitude": -33.8938,
-                        "longitude": 151.2242,
-                        "place_id": "ChIJFdVgXwKuEmsR487D1VwluxM"
-                    }
+                "Stadium Australia": {
+                    "latitude": -33.8472,
+                    "longitude": 151.0634,
+                    "place_id": "ChIJEWAFm9u6MioRFvGLqG5U3KM"
+                },
+                "Allianz Stadium": {
+                    "latitude": -33.8938,
+                    "longitude": 151.2242,
+                    "place_id": "ChIJFdVgXwKuEmsR487D1VwluxM"
                 },
                 "Auckland, New Zealand – Eden Park": {
                     "latitude": -36.8724,
@@ -233,11 +352,13 @@
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
                 mapTypeControlOptions: {
                     mapTypeIds: ["roadmap", "satellite", "hide_poi"]
-                }
+                },
+
+
             })
 
-            hidePointsOfInterest(map)
 
+            hidePointsOfInterest(map)
 
             let infoWindow = new google.maps.InfoWindow()
             for (const [key, value] of Object.entries(locations)) {
@@ -249,36 +370,89 @@
                 })
 
                 google.maps.event.addListener(marker, "click", () => {
-                    infoWindow.setContent(key);
+                    let serviceP = new google.maps.places.PlacesService(map)
+                    let URL = "";
+                    serviceP.getDetails({ placeId: value.place_id }, (place_id, status) => {
+                        if (status === google.maps.places.PlacesServiceStatus.OK) {
+                            console.log(place_id)
+                            infoWindow.setContent(`<div id=content>
+                                             <img src = ${place_id.photos[0].getUrl({ maxWidth: 100, maxHeight: 100 })}>
+                                             <p>${key}</p>
+                                             
+                                        </div>`)
+                        }
+                    })
                     infoWindow.open(map, marker);
                     //to pan with zoom
                     map.setZoom(17);
 
                     map.panTo(marker.getPosition());
+                    if (!markerDroped) {
+                        services_centre_location = marker.getPosition();
+                    }
 
-
-                    let service = new google.maps.places.PlacesService(map)
-
-                    service.nearbySearch({
-                        location: marker.getPosition(), // centre of the search
-                        radius: 5000, // radius (in metres) of the search
-                        type: "cafe"
-                    }, getNearbyServicesMarkers)
+                    showAttraction()
 
 
 
+                })
 
-                });
             }
+            var buttonDiv = document.createElement('div');
 
+            var button = document.createElement('button');
+            button.innerHTML = 'Remove Route';
+
+            button.addEventListener('click', removerRoute);
+
+            
+            buttonDiv.appendChild(button);
+
+            
+            map.controls[google.maps.ControlPosition['TOP_CENTER']].push(buttonDiv);
 
             directionsRenderer = new google.maps.DirectionsRenderer()
             directionsRenderer.setMap(map)
 
+
             directionsRenderer.setPanel(document.getElementById("directions"))
+            if (markerDroped) {
+                console.log(distanceM.get_position())
+            }
+            
 
-            calculateRoute()
+            if (markerDroped) {
+                google.maps.event.addListener(distanceM, 'dragend', function () {
+                    services_centre_location = marker.getPosition();
+                })
+            }
 
+
+
+
+
+
+
+        }
+
+        function showAttraction() {
+
+            let service = new google.maps.places.PlacesService(map)
+
+
+
+            service.nearbySearch({
+                location: services_centre_location, // centre of the search
+                radius: 5000, // radius (in metres) of the search
+                type: [document.getElementById("filter").value] // type of establishment to search for
+            }, getNearbyServicesMarkers)
+            console.log(document.getElementById("filter").value)
+        }
+
+        function removerRoute() {
+
+            directionsRenderer.setMap(null)
+            console.log("why")
         }
 
 
@@ -286,52 +460,38 @@
 
 
 
+
+        let markerArray = []
         function getNearbyServicesMarkers(results, status) {
+
+            markerArray.forEach(marker => {
+                marker.setVisible(false)
+            })
+
+            markerArray = []
+
             if (status === google.maps.places.PlacesServiceStatus.OK) {
                 results.forEach(result => {
+
                     createMarker(result)
                 })
             }
         }
+        
+
+        function moveTo(lat1, lng1) {
+            console.log(lat1)
+            console.log(lng1)
+            map.panTo({ lat: lat1, lng: lng1 });
+            map.setZoom(10);
+
+        }
 
 
-
-        //     function hidePointsOfInterest(map) {
-        //         let styles = [
-        //             {
-        //                 "featureType": "poi",
-        //                 "stylers": [{ "visibility": "off" }]
-        //             }
-        //         ]
-
-        //         let styledMapType = new google.maps.StyledMapType(styles, { name: "POI Hidden", alt: "Hide Points of Interest" })
-        //         map.mapTypes.set("hide_poi", styledMapType)
-
-        //         // map.setMapTypeId("hide_poi")
-        //     }
-        //     let infoWindow = new google.maps.InfoWindow()
-
-        //     // Object.keys(locations).forEach((key) => {
-        //     //     const location = locations[key];
-        //     //     let marker = new google.maps.Marker({
-        //     //         position: new google.maps.LatLng(location.latitude, location.longitude),
-        //     //         map: map,
-        //     //     });
-
-        //     //     infoWindow = new google.maps.InfoWindow();
-
-        //     //     google.maps.event.addListener(marker, "click", () => {
-        //     //         infoWindow.setContent(key);
-        //     //         infoWindow.open(map, marker);
-        //     //     });
-        //     // });
-
-
-        //function to check if the 
         function createMarker(place) {
-            console.log("Pressed")
+
             let icon = {
-                url: "cafe.png", // url
+                url: place.icon, // url
                 scaledSize: new google.maps.Size(30, 30) // scale the image to an icon size
             }
 
@@ -341,11 +501,20 @@
                 position: place.geometry.location
             })
 
+            markerArray.push(marker)
+
             infoWindow = new google.maps.InfoWindow()
 
             google.maps.event.addListener(marker, "click", () => {
                 infoWindow.setContent(place.name)
                 infoWindow.open(map, marker)
+
+                if (markerDroped) {
+                    services_centre_location = distanceM.getPosition();
+                }
+                selectedLocation = marker.getPosition();
+                calculateRoutef(services_centre_location, selectedLocation)
+
             })
         }
 
@@ -361,11 +530,22 @@
             let styledMapType = new google.maps.StyledMapType(styles, { name: "POI Hidden", alt: "Hide Points of Interest" })
             map.mapTypes.set("hide_poi", styledMapType)
 
+        }
+
+        function DistanceMarker() {
+            distanceM = new google.maps.Marker({
+                map: map,
+                position: map.getCenter(),
+                draggable: true,
+            })
+            distanceM.setMap(map)
+            markerDroped = true;
+            document.getElementById("button1").innerHTML = `<button onclick="RemoveMarker()"> remove pin</button>`
 
         }
 
         function calculateRoute() {
-
+            directionsRenderer.setMap(map)
             let start = document.getElementById("start").value
             let end = document.getElementById("end").value
 
@@ -384,30 +564,34 @@
 
         }
 
+        function calculateRoutef(start, end) {
+            directionsRenderer.setMap(map)
+            let startf = start
+            let endf = end
 
-        //  function getPhoto(place){
-        //     //generate code to get the place id with the name of the place
+            let request = {
+                origin: startf,
+                destination: endf,
+                travelMode: google.maps.TravelMode.DRIVING
+            }
+
+            directionsService = new google.maps.DirectionsService()
+            directionsService.route(request, (route, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    directionsRenderer.setDirections(route)
+                }
+            })
+
+        }
 
 
-        //     let service = new google.maps.places.PlacesService(map)
-        //     var photo = "";
-        //     service.getDetails({
-        //         placeId: place
-        //     }, (place, status) => {
-        //         if (status === google.maps.places.PlacesServiceStatus.OK) {
-        //             console.log(place)
-        //             photo =  place.photos[0].getUrl({maxWidth: 100, maxHeight: 100})
-        //         }
-        //     })
-
-        // }
         async function getPhoto(place) {
             return new Promise((resolve, reject) => {
                 let service = new google.maps.places.PlacesService(map)
                 service.getDetails({ placeId: place }, (place, status) => {
                     if (status === google.maps.places.PlacesServiceStatus.OK) {
                         console.log(place)
-                        resolve(place.photos[0].getUrl({ maxWidth: 100, maxHeight: 100 }))
+                        resolve(place.photos[0].getUrl({ maxWidth: 200, maxHeight: 200 }))
                     } else {
                         reject(new Error(`Failed to get photo for place ${place}: ${status}`))
                     }
@@ -432,7 +616,7 @@
         //     return htmlString
         // }
         async function ReturnStadiums() {
-            var htmlString = "hello"
+            var htmlString = ""
             for (const [key, value] of Object.entries(locations)) {
                 htmlString += `<div class="card">`;
                 var index = key.indexOf("–");
@@ -446,10 +630,35 @@
                 }
                 htmlString += `<div class="card-body">`
                 htmlString += `<h5 class="card-title">${key}</h5>`
+                htmlString += `<button onclick="moveTo(${value.latitude} , ${value.longitude})">Directions</button>`
+
                 htmlString += `</div></div>`
             }
             return htmlString
         }
+
+        function createButton(map, title, position, callback) {
+          
+            var buttonDiv = document.createElement('div');
+          
+            var button = document.createElement('button');
+            button.innerHTML = title;
+            
+            button.addEventListener('click', callback);
+            
+            buttonDiv.appendChild(button);
+
+            map.controls[google.maps.ControlPosition[position]].push(buttonDiv);
+        }
+        function RemoveMarker() {
+            distanceM.setMap(null)
+            markerDroped = false;
+            document.getElementById("button1").innerHTML = `<button onclick="DistanceMarker()"> Add pin</button>`
+        }
+
+
+
+
         //function to set the controle panel accordin to what is selected
         async function setControlePanel() {
             var opt = document.getElementById("sected").value
@@ -471,6 +680,7 @@
             <option value="Perth, Australia – Perth Rectangular Stadium"> Perth Rectangular Stadium</option>                     
         </select>`;
                 document.getElementById("control-panel").innerHTML = htmlString;
+                document.getElementById("stadiums").innerHTML = "";
             }
 
             else if (opt === "scrole trough") {
@@ -521,36 +731,34 @@
             </form>
         </div>
     </nav>
+    <div id = "mapControls">
+        <div class="control">
 
-    <select name="options" id="sected" onchange="setControlePanel()">
-        <option value="route" selected>route</option>
-        <option value="scrole trough">scrole trough</option>
-        <option value="Stadiums">Stadiums</option>
-        <option value="audi">Audi</option>
-    </select>
+            <select name="options" id="sected" onchange="setControlePanel()">
+                <option value="route">Distance from stadiums and route</option>
+                <option value="scrole trough" selected>scrole trough</option>
+                <option value="Stadiums">Stadiums</option>
+            </select>
 
+        </div>
 
-    <!-- <span class=select-location-label>Start:</span>
-        <select id=start onChange=calculateRoute()>
-            <option value="Adelaide, Australia Hindmarsh Stadium">Hindmarsh Stadium</option>
-            <option value="Brisbane Stadium">Brisbane Stadium</option>
-            <option value="Melbourne, Australia – Melbourne Rectangular Stadium">Melbourne Rectangular Stadium</option>
-            <option value="Perth, Australia – Perth Rectangular Stadium"> Perth Rectangular Stadium</option>                 
-        </select>
+        <div id="button1" class="control">
 
-        <br>
-        <span class=select-location-label>End:</span>
-        <select id=end onChange=calculateRoute()>
-            <option value="Adelaide, Australia Hindmarsh Stadium">Hindmarsh Stadium</option>
-            <option value="Brisbane Stadium">Brisbane Stadium</option>
-            <option value="Melbourne, Australia – Melbourne Rectangular Stadium">Melbourne Rectangular Stadium</option>
-            <option value="Perth, Australia – Perth Rectangular Stadium"> Perth Rectangular Stadium</option>                     
-        </select> -->
+        </div>
+
+        <div class="control">
 
 
-
-
+            <label for="my-select">Filter POI:</label>
+            <select id="filter" onchange="showAttraction()">
+                <option value="cafe">Cafe</option>
+                <option value="hotel">Hotel</optoin>
+                <option value="bank">Bank</optoin>
+                <option value="atm">ATM</optoin>
+            </select>
+        </div>
     </div>
+
     <div id=map></div>
     <div id=directions></div>
 
@@ -599,6 +807,19 @@
             <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
         </div>
     </footer>
+
+    <script>
+
+        var htmlopt = `<button onclick="DistanceMarker()"> Drop Pin</button>`
+        var html2 = `<button onclick="RemoveMarker()"> remove pin</button>`
+        if (markerDroped) {
+            console.log("markerDroped")
+            document.getElementById("button1").innerHTML = html2;
+        }
+        else {
+            document.getElementById("button1").innerHTML = htmlopt;
+        }
+    </script>
 </body>
 
 </html>
